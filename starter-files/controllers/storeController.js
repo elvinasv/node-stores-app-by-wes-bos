@@ -35,8 +35,6 @@ exports.createStore = async (req, res) => {
 exports.upload = multer(multerOptions).single("photo");
 
 exports.resize = async (req, res, next) => {
-  console.log("exports.resize 12");
-
   // check if there's no new file to resize
   if (!req.file) {
     console.log("no file here");
@@ -58,6 +56,16 @@ exports.resize = async (req, res, next) => {
 exports.getStores = async (req, res) => {
   const stores = await Store.find();
   res.render("stores", { title: "Stores", stores });
+};
+
+exports.getStoreBySlug = async (req, res, next) => {
+  const store = await Store.findOne({ slug: req.params.slug });
+
+  if (store) {
+    res.render("store", { store, tite: store.name });
+  } else {
+    return next();
+  }
 };
 
 exports.editStore = async (req, res) => {

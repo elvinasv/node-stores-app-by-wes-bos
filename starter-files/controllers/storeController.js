@@ -94,7 +94,14 @@ exports.updateStore = async (req, res) => {
 };
 
 exports.getStoresByTag = async (req, res) => {
-  const tags = await Store.getTagsList();
   const tag = req.params.tag;
-  res.render("tag", { tags, title: "Tags", tag });
+  const tagQuery = tag || { $exists: true };
+
+  const tagsPromise = Store.getTagsList();
+  // Store.find checks automatically if tags[] includes tag
+  const storesPromise = Store.find({ tags: tagQuery });
+
+  const [tags, stores] = await Promise.all([tagsPromise, storesPromise]);
+
+  res.render("tag", { tags, stores, title: "Tags", tag });
 };

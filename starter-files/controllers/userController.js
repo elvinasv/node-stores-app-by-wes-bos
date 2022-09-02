@@ -60,3 +60,28 @@ exports.register = async (req, res, next) => {
 
   next();
 };
+
+exports.account = (req, res) => {
+  res.render("account", { title: "Edit your account" });
+};
+
+exports.updateAccount = async (req, res) => {
+  const updates = {
+    name: req.body.name,
+    email: req.body.email,
+  };
+
+  const user = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $set: updates },
+    {
+      new: true, // return the new store instead of the old one
+      runValidators: true,
+      context: "query",
+    }
+  );
+
+  req.flash("success", "Updated the profile!");
+  // Go to the previous page
+  res.redirect("back");
+};

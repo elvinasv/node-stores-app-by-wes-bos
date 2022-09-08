@@ -48,6 +48,8 @@ storeSchema.index({
   description: "text",
 });
 
+storeSchema.index({ location: "2dsphere" });
+
 storeSchema.pre("save", async function (next) {
   if (!this.isModified("name")) {
     return next(); // skip and return if if name not modified
@@ -66,6 +68,8 @@ storeSchema.pre("save", async function (next) {
 
   next();
 });
+
+// TODO: Sanitize values to prevent XSS
 
 storeSchema.statics.getTagsList = function () {
   return this.aggregate([

@@ -177,3 +177,12 @@ exports.heartStore = async (req, res) => {
 
   res.json(user);
 };
+
+exports.getHearts = async (req, res) => {
+  // Find all stores where id of the store is in the array (of user.hearts)
+  const stores = await Store.find({
+    _id: { $in: req.user.hearts },
+  });
+
+  res.render("stores", { title: "Hearted stores", stores });
+};

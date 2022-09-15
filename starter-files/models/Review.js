@@ -28,4 +28,13 @@ const reviewSchema = new Schema({
   },
 });
 
+function autoPopulate(next) {
+  this.populate("author");
+  next();
+}
+
+// Hook when find or findOne is used. Then call autoPopulate
+reviewSchema.pre("find", autoPopulate);
+reviewSchema.pre("findOne", autoPopulate);
+
 module.exports = mongoose.model("Review", reviewSchema);

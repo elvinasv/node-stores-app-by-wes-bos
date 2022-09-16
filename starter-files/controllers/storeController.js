@@ -186,3 +186,10 @@ exports.getHearts = async (req, res) => {
 
   res.render("stores", { title: "Hearted stores", stores });
 };
+
+exports.getTopStores = async (req, res) => {
+  // If you have a complex query, it's better to put it on the model itself
+  const stores = await Store.getTopStores();
+
+  res.render("topStores", { stores, title: "Top Stores!" });
+};

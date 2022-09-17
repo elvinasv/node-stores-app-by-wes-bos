@@ -56,8 +56,38 @@ exports.resize = async (req, res, next) => {
 };
 
 exports.getStores = async (req, res) => {
-  const stores = await Store.find();
-  res.render("stores", { title: "Stores", stores });
+  const page = req.params.page || 1;
+  const limit = 6;
+  const skip = page * limit - limit; // skip previous stores
+
+  // 1. Query the database for a list of all stores
+  const storesPromise = Store.find()
+    .skip(skip)
+    .limit(limit)
+    .sort({ created: "desc" });
+
+  const countPromise = Store.count();
+
+  const [stores, count] = await Promise.all([storesPromise, countPromise]);
+
+  const pages = Math.ceil(count / limit);
+
+  if (!stores.length && skip) {
+    req.flash(
+      "info",
+      `Page ${page} doesn't exist. Redirecting to the last page - ${pages}.`
+    );
+
+    return res.redirect(`/stores/page/${pages}`);
+  }
+
+  res.render("stores", {
+    title: "Stores",
+    stores,
+    page,
+    pages,
+    count,
+  });
 };
 
 exports.getStoreBySlug = async (req, res, next) => {

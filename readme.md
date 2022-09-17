@@ -4,6 +4,8 @@ Using Node.js, Express, MongoDB
 
 Implemented as part of https://learnnode.com/
 
+Demo: https://find-best-cafe-node-app.herokuapp.com/
+
 ## Sample Data
 
 To load sample data, run the following command in your terminal:
